@@ -76,7 +76,8 @@ const CourseOffering = sequelize.define('CourseOffering', {
   indexes: [
     {
       unique: true,
-      fields: ['moduleId', 'classId', 'cohortId', 'trimester', 'intakePeriod']
+      name: 'unique_course_offering',
+      fields: ['module_id', 'class_id', 'cohort_id', 'trimester', 'intake_period']
     }
   ]
 });
