@@ -158,6 +158,128 @@ const validateCourseOfferingQuery = [
   handleValidationErrors
 ];
 
+const validateActivityLogCreate = [
+  body('allocationId')
+    .isInt({ min: 1 })
+    .withMessage('Allocation ID must be a positive integer'),
+  body('weekNumber')
+    .isInt({ min: 1, max: 52 })
+    .withMessage('Week number must be between 1 and 52'),
+  body('year')
+    .isInt({ min: 2020, max: 2030 })
+    .withMessage('Year must be between 2020 and 2030'),
+  body('attendance')
+    .optional()
+    .isArray()
+    .withMessage('Attendance must be an array'),
+  body('formativeOneGrading')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Formative One Grading must be Done, Pending, or Not Started'),
+  body('formativeTwoGrading')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Formative Two Grading must be Done, Pending, or Not Started'),
+  body('summativeGrading')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Summative Grading must be Done, Pending, or Not Started'),
+  body('courseModeration')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Course Moderation must be Done, Pending, or Not Started'),
+  body('intranetSync')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Intranet Sync must be Done, Pending, or Not Started'),
+  body('gradeBookStatus')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Grade Book Status must be Done, Pending, or Not Started'),
+  body('notes')
+    .optional()
+    .trim()
+    .isLength({ max: 1000 })
+    .withMessage('Notes must be less than 1000 characters'),
+  handleValidationErrors
+];
+
+const validateActivityLogUpdate = [
+  param('id')
+    .isInt({ min: 1 })
+    .withMessage('Activity log ID must be a positive integer'),
+  body('allocationId')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Allocation ID must be a positive integer'),
+  body('weekNumber')
+    .optional()
+    .isInt({ min: 1, max: 52 })
+    .withMessage('Week number must be between 1 and 52'),
+  body('year')
+    .optional()
+    .isInt({ min: 2020, max: 2030 })
+    .withMessage('Year must be between 2020 and 2030'),
+  body('attendance')
+    .optional()
+    .isArray()
+    .withMessage('Attendance must be an array'),
+  body('formativeOneGrading')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Formative One Grading must be Done, Pending, or Not Started'),
+  body('formativeTwoGrading')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Formative Two Grading must be Done, Pending, or Not Started'),
+  body('summativeGrading')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Summative Grading must be Done, Pending, or Not Started'),
+  body('courseModeration')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Course Moderation must be Done, Pending, or Not Started'),
+  body('intranetSync')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Intranet Sync must be Done, Pending, or Not Started'),
+  body('gradeBookStatus')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Grade Book Status must be Done, Pending, or Not Started'),
+  body('notes')
+    .optional()
+    .trim()
+    .isLength({ max: 1000 })
+    .withMessage('Notes must be less than 1000 characters'),
+  handleValidationErrors
+];
+
+const validateActivityLogQuery = [
+  query('facilitatorId')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Facilitator ID must be a positive integer'),
+  query('allocationId')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Allocation ID must be a positive integer'),
+  query('weekNumber')
+    .optional()
+    .isInt({ min: 1, max: 52 })
+    .withMessage('Week number must be between 1 and 52'),
+  query('year')
+    .optional()
+    .isInt({ min: 2020, max: 2030 })
+    .withMessage('Year must be between 2020 and 2030'),
+  query('status')
+    .optional()
+    .isIn(['Done', 'Pending', 'Not Started'])
+    .withMessage('Status must be Done, Pending, or Not Started'),
+  handleValidationErrors
+];
+
 const validateModuleCreate = [
   body('code')
     .trim()
@@ -186,5 +308,8 @@ module.exports = {
   validateCourseOfferingCreate,
   validateCourseOfferingUpdate,
   validateCourseOfferingQuery,
+  validateActivityLogCreate,
+  validateActivityLogUpdate,
+  validateActivityLogQuery,
   validateModuleCreate
 }; 

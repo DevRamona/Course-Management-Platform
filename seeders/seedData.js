@@ -1,4 +1,4 @@
-const { User, Module, Cohort, Class, Mode, CourseOffering } = require('../models');
+const { User, Module, Cohort, Class, Mode, CourseOffering, ActivityTracker } = require('../models');
 const bcrypt = require('bcryptjs');
 
 /**
@@ -197,6 +197,86 @@ const seedData = async () => {
     ]);
 
     console.log('✅ Course offerings seeded');
+
+    const activityLogs = await ActivityTracker.bulkCreate([
+      {
+        allocationId: 1,
+        facilitatorId: 2,
+        weekNumber: 1,
+        year: 2024,
+        attendance: [true, true, true, true, true],
+        formativeOneGrading: 'Done',
+        formativeTwoGrading: 'Not Started',
+        summativeGrading: 'Not Started',
+        courseModeration: 'Pending',
+        intranetSync: 'Done',
+        gradeBookStatus: 'Done',
+        notes: 'Week 1 completed successfully. All students attended all sessions.',
+        submittedAt: new Date('2024-01-20')
+      },
+      {
+        allocationId: 1,
+        facilitatorId: 2,
+        weekNumber: 2,
+        year: 2024,
+        attendance: [true, true, false, true, true],
+        formativeOneGrading: 'Done',
+        formativeTwoGrading: 'Not Started',
+        summativeGrading: 'Not Started',
+        courseModeration: 'Done',
+        intranetSync: 'Done',
+        gradeBookStatus: 'Done',
+        notes: 'Week 2 completed. One student missed Wednesday session.',
+        submittedAt: new Date('2024-01-27')
+      },
+      {
+        allocationId: 2,
+        facilitatorId: 3,
+        weekNumber: 1,
+        year: 2024,
+        attendance: [true, true, true, true, true],
+        formativeOneGrading: 'Pending',
+        formativeTwoGrading: 'Not Started',
+        summativeGrading: 'Not Started',
+        courseModeration: 'Not Started',
+        intranetSync: 'Done',
+        gradeBookStatus: 'Pending',
+        notes: 'Week 1 online sessions completed. Need to review formative assessments.',
+        submittedAt: new Date('2024-01-21')
+      },
+      {
+        allocationId: 3,
+        facilitatorId: 2,
+        weekNumber: 1,
+        year: 2024,
+        attendance: [true, true, true, true, true],
+        formativeOneGrading: 'Done',
+        formativeTwoGrading: 'Not Started',
+        summativeGrading: 'Not Started',
+        courseModeration: 'Pending',
+        intranetSync: 'Done',
+        gradeBookStatus: 'Done',
+        notes: 'Hybrid delivery working well. Students engaged in both online and in-person sessions.',
+        submittedAt: new Date('2024-09-07')
+      },
+      {
+        allocationId: 4,
+        facilitatorId: 3,
+        weekNumber: 1,
+        year: 2024,
+        attendance: [true, true, true, true, true],
+        formativeOneGrading: 'Done',
+        formativeTwoGrading: 'Not Started',
+        summativeGrading: 'Not Started',
+        courseModeration: 'Not Started',
+        intranetSync: 'Done',
+        gradeBookStatus: 'Done',
+        notes: 'Calculus course progressing well. Students showing good understanding of fundamentals.',
+        submittedAt: new Date('2024-01-22')
+      }
+    ]);
+
+    console.log('✅ Activity logs seeded');
     console.log('🎉 All seed data created successfully!');
 
     // Log created data for reference
@@ -207,6 +287,7 @@ const seedData = async () => {
     console.log(`- Classes: ${classes.length}`);
     console.log(`- Modes: ${modes.length}`);
     console.log(`- Course Offerings: ${courseOfferings.length}`);
+    console.log(`- Activity Logs: ${activityLogs.length}`);
 
     console.log('\n🔑 Test Accounts:');
     console.log('Manager: manager@university.edu / Password123!');

@@ -8,9 +8,11 @@
     "dev": "nodemon server.js",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:module2": "node scripts/test-module2.js",
     "db:migrate": "npx sequelize-cli db:migrate",
     "db:seed": "npx sequelize-cli db:seed:all",
-    "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
+    "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "worker": "node workers/notificationWorker.js"
   },
   "keywords": ["course-management", "academic", "nodejs", "express", "mysql"],
   "author": "Your Name",
@@ -29,7 +31,10 @@
     "winston": "^3.11.0",
     "i18next": "^23.7.6",
     "i18next-fs-backend": "^2.2.1",
-    "i18next-http-middleware": "^3.5.0"
+    "i18next-http-middleware": "^3.5.0",
+    "redis": "^4.6.10",
+    "bull": "^4.12.0",
+    "nodemailer": "^6.9.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

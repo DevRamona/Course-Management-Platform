@@ -7,6 +7,7 @@ const sequelize = require('./config/sequelize');
 
 const authRoutes = require('./routes/auth');
 const courseOfferingRoutes = require('./routes/courseOfferings');
+const activityTrackerRoutes = require('./routes/activityTracker');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -49,6 +50,7 @@ app.get('/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/course-offerings', courseOfferingRoutes);
+app.use('/api/activity-tracker', activityTrackerRoutes);
 
 app.use('*', (req, res) => {
   res.status(404).json({
