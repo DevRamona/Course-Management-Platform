@@ -5,9 +5,7 @@ const Class = require('./Class');
 const Mode = require('./Mode');
 const CourseOffering = require('./CourseOffering');
 
-// Define associations
 const defineAssociations = () => {
-  // User associations
   User.hasMany(CourseOffering, { 
     foreignKey: 'facilitatorId', 
     as: 'facilitatedCourses' 
@@ -17,7 +15,6 @@ const defineAssociations = () => {
     as: 'facilitator' 
   });
 
-  // Module associations
   Module.hasMany(CourseOffering, { 
     foreignKey: 'moduleId', 
     as: 'courseOfferings' 
@@ -27,7 +24,6 @@ const defineAssociations = () => {
     as: 'module' 
   });
 
-  // Cohort associations
   Cohort.hasMany(CourseOffering, { 
     foreignKey: 'cohortId', 
     as: 'courseOfferings' 
@@ -37,7 +33,6 @@ const defineAssociations = () => {
     as: 'cohort' 
   });
 
-  // Class associations
   Class.hasMany(CourseOffering, { 
     foreignKey: 'classId', 
     as: 'courseOfferings' 
@@ -47,7 +42,6 @@ const defineAssociations = () => {
     as: 'class' 
   });
 
-  // Mode associations
   Mode.hasMany(CourseOffering, { 
     foreignKey: 'modeId', 
     as: 'courseOfferings' 
@@ -58,7 +52,6 @@ const defineAssociations = () => {
   });
 };
 
-// Initialize associations
 defineAssociations();
 
 module.exports = {

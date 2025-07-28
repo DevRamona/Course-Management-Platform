@@ -56,12 +56,10 @@ const User = sequelize.define('User', {
   }
 });
 
-// Instance method to compare password
 User.prototype.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Instance method to get full name
 User.prototype.getFullName = function() {
   return `${this.firstName} ${this.lastName}`;
 };

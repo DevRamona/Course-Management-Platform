@@ -1,9 +1,6 @@
 const { CourseOffering, User, Module, Cohort, Class, Mode } = require('../models');
 const { Op } = require('sequelize');
 
-/**
- * Create a new course offering (Managers only)
- */
 const createCourseOffering = async (req, res) => {
   try {
     const {
@@ -19,7 +16,6 @@ const createCourseOffering = async (req, res) => {
       maxStudents
     } = req.body;
 
-    // Check if facilitator exists and is a facilitator
     const facilitator = await User.findOne({
       where: { id: facilitatorId, role: 'facilitator' }
     });
@@ -31,7 +27,6 @@ const createCourseOffering = async (req, res) => {
       });
     }
 
-    // Check for duplicate course offering
     const existingOffering = await CourseOffering.findOne({
       where: {
         moduleId,
@@ -62,7 +57,6 @@ const createCourseOffering = async (req, res) => {
       maxStudents
     });
 
-    // Fetch the created offering with associations
     const createdOffering = await CourseOffering.findByPk(courseOffering.id, {
       include: [
         { model: Module, as: 'module' },
@@ -87,9 +81,6 @@ const createCourseOffering = async (req, res) => {
   }
 };
 
-/**
- * Get all course offerings with filtering
- */
 const getCourseOfferings = async (req, res) => {
   try {
     const {
@@ -103,7 +94,6 @@ const getCourseOfferings = async (req, res) => {
       limit = 10
     } = req.query;
 
-    // Build where clause for filtering
     const whereClause = { isActive: true };
     
     if (trimester) whereClause.trimester = trimester;
@@ -113,7 +103,6 @@ const getCourseOfferings = async (req, res) => {
     if (cohortId) whereClause.cohortId = cohortId;
     if (moduleId) whereClause.moduleId = moduleId;
 
-    // Pagination
     const offset = (page - 1) * limit;
 
     const { count, rows: courseOfferings } = await CourseOffering.findAndCountAll({
@@ -151,9 +140,6 @@ const getCourseOfferings = async (req, res) => {
   }
 };
 
-/**
- * Get course offering by ID
- */
 const getCourseOfferingById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -188,9 +174,6 @@ const getCourseOfferingById = async (req, res) => {
   }
 };
 
-/**
- * Update course offering (Managers only)
- */
 const updateCourseOffering = async (req, res) => {
   try {
     const { id } = req.params;
@@ -204,7 +187,6 @@ const updateCourseOffering = async (req, res) => {
       });
     }
 
-    // If facilitator is being updated, verify they exist and are a facilitator
     if (updateData.facilitatorId) {
       const facilitator = await User.findOne({
         where: { id: updateData.facilitatorId, role: 'facilitator' }
@@ -220,7 +202,6 @@ const updateCourseOffering = async (req, res) => {
 
     await courseOffering.update(updateData);
 
-    // Fetch updated offering with associations
     const updatedOffering = await CourseOffering.findByPk(id, {
       include: [
         { model: Module, as: 'module' },
@@ -245,9 +226,6 @@ const updateCourseOffering = async (req, res) => {
   }
 };
 
-/**
- * Delete course offering (Managers only)
- */
 const deleteCourseOffering = async (req, res) => {
   try {
     const { id } = req.params;
@@ -260,7 +238,6 @@ const deleteCourseOffering = async (req, res) => {
       });
     }
 
-    // Soft delete by setting isActive to false
     await courseOffering.update({ isActive: false });
 
     res.json({
@@ -276,9 +253,6 @@ const deleteCourseOffering = async (req, res) => {
   }
 };
 
-/**
- * Get course offerings for a specific facilitator
- */
 const getFacilitatorCourseOfferings = async (req, res) => {
   try {
     const facilitatorId = req.user.id;

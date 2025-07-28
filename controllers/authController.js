@@ -1,14 +1,10 @@
 const { User } = require('../models');
 const { generateToken } = require('../utils/auth');
 
-/**
- * User registration
- */
 const register = async (req, res) => {
   try {
     const { email, password, firstName, lastName, role = 'student' } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({
@@ -17,7 +13,6 @@ const register = async (req, res) => {
       });
     }
 
-    // Create new user
     const user = await User.create({
       email,
       password,
@@ -26,7 +21,6 @@ const register = async (req, res) => {
       role
     });
 
-    // Generate token
     const token = generateToken(user);
 
     res.status(201).json({
@@ -52,14 +46,10 @@ const register = async (req, res) => {
   }
 };
 
-/**
- * User login
- */
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user by email
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(401).json({
@@ -68,7 +58,6 @@ const login = async (req, res) => {
       });
     }
 
-    // Check if user is active
     if (!user.isActive) {
       return res.status(401).json({
         success: false,
@@ -76,7 +65,6 @@ const login = async (req, res) => {
       });
     }
 
-    // Verify password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -85,10 +73,8 @@ const login = async (req, res) => {
       });
     }
 
-    // Update last login
     await user.update({ lastLogin: new Date() });
 
-    // Generate token
     const token = generateToken(user);
 
     res.json({
@@ -114,9 +100,6 @@ const login = async (req, res) => {
   }
 };
 
-/**
- * Get current user profile
- */
 const getProfile = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {

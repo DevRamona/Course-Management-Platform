@@ -1,13 +1,10 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 
-/**
- * Middleware to authenticate JWT tokens
- */
 const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
       return res.status(401).json({ 
@@ -48,9 +45,6 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
-/**
- * Middleware to check if user has required role
- */
 const requireRole = (roles) => {
   return (req, res, next) => {
     if (!req.user) {
@@ -74,19 +68,10 @@ const requireRole = (roles) => {
   };
 };
 
-/**
- * Middleware to check if user is a manager
- */
 const requireManager = requireRole('manager');
 
-/**
- * Middleware to check if user is a facilitator
- */
 const requireFacilitator = requireRole('facilitator');
 
-/**
- * Middleware to check if user is a manager or facilitator
- */
 const requireManagerOrFacilitator = requireRole(['manager', 'facilitator']);
 
 module.exports = {

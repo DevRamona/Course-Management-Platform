@@ -1,8 +1,5 @@
 const { body, param, query, validationResult } = require('express-validator');
 
-/**
- * Handle validation errors
- */
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -15,9 +12,6 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-/**
- * Validation rules for user registration
- */
 const validateUserRegistration = [
   body('email')
     .isEmail()
@@ -43,9 +37,6 @@ const validateUserRegistration = [
   handleValidationErrors
 ];
 
-/**
- * Validation rules for user login
- */
 const validateUserLogin = [
   body('email')
     .isEmail()
@@ -57,9 +48,6 @@ const validateUserLogin = [
   handleValidationErrors
 ];
 
-/**
- * Validation rules for course offering creation
- */
 const validateCourseOfferingCreate = [
   body('moduleId')
     .isInt({ min: 1 })
@@ -95,9 +83,6 @@ const validateCourseOfferingCreate = [
   handleValidationErrors
 ];
 
-/**
- * Validation rules for course offering update
- */
 const validateCourseOfferingUpdate = [
   param('id')
     .isInt({ min: 1 })
@@ -145,9 +130,6 @@ const validateCourseOfferingUpdate = [
   handleValidationErrors
 ];
 
-/**
- * Validation rules for course offering queries
- */
 const validateCourseOfferingQuery = [
   query('trimester')
     .optional()
@@ -176,9 +158,6 @@ const validateCourseOfferingQuery = [
   handleValidationErrors
 ];
 
-/**
- * Validation rules for module creation
- */
 const validateModuleCreate = [
   body('code')
     .trim()
