@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 const { notificationQueue, reminderQueue, alertQueue } = require('../config/redis');
 const { ActivityTracker, User, CourseOffering } = require('../models');
 
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: process.env.SMTP_PORT || 587,
   secure: false,
