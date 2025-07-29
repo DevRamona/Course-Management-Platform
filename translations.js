@@ -1,0 +1,53 @@
+const translations = {
+    en: {
+        pageTitle: "Student Reflection Page",
+        title: "Student Reflection Page",
+        welcome: "Welcome to Your Reflection Page",
+        greeting: "Please take a moment to reflect on your course experience.",
+        reflectionTitle: "Course Reflection",
+        question1Label: "What did you enjoy most about the course?",
+        question1Placeholder: "Share your thoughts about what you enjoyed most...",
+        question2Label: "What was the most challenging part?",
+        question2Placeholder: "Describe the challenges you faced...",
+        question3Label: "What could be improved?",
+        question3Placeholder: "Suggest improvements for the course...",
+        submitButton: "Submit Reflection",
+        submittedReflection: "Your Submitted Reflection",
+        editButton: "Edit Reflection",
+        footer: "© 2024 Course Management Platform - Student Reflection Module"
+    },
+    fr: {
+        pageTitle: "Page de Réflexion Étudiante",
+        title: "Page de Réflexion Étudiante",
+        welcome: "Bienvenue sur votre page de réflexion",
+        greeting: "Veuillez prendre un moment pour réfléchir à votre expérience de cours.",
+        reflectionTitle: "Réflexion sur le Cours",
+        question1Label: "Qu'est-ce que vous avez le plus apprécié dans le cours ?",
+        question1Placeholder: "Partagez vos pensées sur ce que vous avez le plus apprécié...",
+        question2Label: "Quelle était la partie la plus difficile ?",
+        question2Placeholder: "Décrivez les défis que vous avez rencontrés...",
+        question3Label: "Qu'est-ce qui pourrait être amélioré ?",
+        question3Placeholder: "Suggérez des améliorations pour le cours...",
+        submitButton: "Soumettre la Réflexion",
+        submittedReflection: "Votre Réflexion Soumise",
+        editButton: "Modifier la Réflexion",
+        footer: "© 2024 Plateforme de Gestion des Cours - Module de Réflexion Étudiante"
+    },
+    es: {
+        pageTitle: "Página de Reflexión del Estudiante",
+        title: "Página de Reflexión del Estudiante",
+        welcome: "Bienvenido a tu página de reflexión",
+        greeting: "Por favor, tómate un momento para reflexionar sobre tu experiencia en el curso.",
+        reflectionTitle: "Reflexión del Curso",
+        question1Label: "¿Qué fue lo que más disfrutaste del curso?",
+        question1Placeholder: "Comparte tus pensamientos sobre lo que más disfrutaste...",
+        question2Label: "¿Cuál fue la parte más desafiante?",
+        question2Placeholder: "Describe los desafíos que enfrentaste...",
+        question3Label: "¿Qué se podría mejorar?",
+        question3Placeholder: "Sugiere mejoras para el curso...",
+        submitButton: "Enviar Reflexión",
+        submittedReflection: "Tu Reflexión Enviada",
+        editButton: "Editar Reflexión",
+        footer: "© 2024 Plataforma de Gestión de Cursos - Módulo de Reflexión del Estudiante"
+    }
+}; 

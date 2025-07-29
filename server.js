@@ -17,7 +17,7 @@ app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? process.env.ALLOWED_ORIGINS?.split(',') 
-    : true,
+    : ['http://localhost:3001', 'https://yourusername.github.io'],
   credentials: true
 }));
 
