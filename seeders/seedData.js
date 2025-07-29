@@ -1,4 +1,4 @@
-const { User, Module, Cohort, Class, Mode, CourseOffering, ActivityTracker } = require('../models');
+const { User, Module, Cohort, Class, Mode, CourseOffering, ActivityTracker, StudentReflection } = require('../models');
 const bcrypt = require('bcryptjs');
 
 /**
@@ -277,6 +277,38 @@ const seedData = async () => {
     ]);
 
     console.log('✅ Activity logs seeded');
+
+    const studentReflections = await StudentReflection.bulkCreate([
+      {
+        studentId: 4,
+        courseOfferingId: 1,
+        question1: 'I really enjoyed the practical programming exercises and hands-on coding sessions. The instructor made complex concepts easy to understand.',
+        question2: 'The most challenging part was understanding object-oriented programming concepts initially, but with practice it became clearer.',
+        question3: 'I think more interactive examples and additional practice problems would help reinforce the concepts better.',
+        language: 'en',
+        submittedAt: new Date('2024-02-15')
+      },
+      {
+        studentId: 4,
+        courseOfferingId: 2,
+        question1: 'The online format was very convenient and the video lectures were well-structured and easy to follow.',
+        question2: 'Managing time effectively for self-paced learning was challenging, but I developed better study habits.',
+        question3: 'More real-time interaction with other students would enhance the learning experience.',
+        language: 'en',
+        submittedAt: new Date('2024-02-20')
+      },
+      {
+        studentId: 4,
+        courseOfferingId: 3,
+        question1: 'J\'ai apprécié la combinaison d\'apprentissage en ligne et en personne. Cela a rendu le cours plus flexible.',
+        question2: 'La partie la plus difficile était de maintenir la motivation pendant les sessions en ligne.',
+        question3: 'Plus de sessions de groupe et de discussions interactives seraient bénéfiques.',
+        language: 'fr',
+        submittedAt: new Date('2024-09-10')
+      }
+    ]);
+
+    console.log('✅ Student reflections seeded');
     console.log('🎉 All seed data created successfully!');
 
     // Log created data for reference
@@ -288,6 +320,7 @@ const seedData = async () => {
     console.log(`- Modes: ${modes.length}`);
     console.log(`- Course Offerings: ${courseOfferings.length}`);
     console.log(`- Activity Logs: ${activityLogs.length}`);
+    console.log(`- Student Reflections: ${studentReflections.length}`);
 
     console.log('\n🔑 Test Accounts:');
     console.log('Manager: manager@university.edu / Password123!');

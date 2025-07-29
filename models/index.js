@@ -5,6 +5,7 @@ const Class = require('./Class');
 const Mode = require('./Mode');
 const CourseOffering = require('./CourseOffering');
 const ActivityTracker = require('./ActivityTracker');
+const StudentReflection = require('./StudentReflection');
 
 const defineAssociations = () => {
   User.hasMany(CourseOffering, { 
@@ -69,6 +70,24 @@ const defineAssociations = () => {
     foreignKey: 'facilitatorId',
     as: 'facilitator'
   });
+
+  User.hasMany(StudentReflection, {
+    foreignKey: 'studentId',
+    as: 'reflections'
+  });
+  StudentReflection.belongsTo(User, {
+    foreignKey: 'studentId',
+    as: 'student'
+  });
+
+  CourseOffering.hasMany(StudentReflection, {
+    foreignKey: 'courseOfferingId',
+    as: 'reflections'
+  });
+  StudentReflection.belongsTo(CourseOffering, {
+    foreignKey: 'courseOfferingId',
+    as: 'courseOffering'
+  });
 };
 
 defineAssociations();
@@ -81,5 +100,6 @@ module.exports = {
   Mode,
   CourseOffering,
   ActivityTracker,
+  StudentReflection,
   sequelize: require('../config/sequelize')
 }; 

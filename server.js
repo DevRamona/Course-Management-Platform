@@ -51,6 +51,9 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/course-offerings', courseOfferingRoutes);
 app.use('/api/activity-tracker', activityTrackerRoutes);
+// app.use('/api/student-reflection', studentReflectionRoutes);
+
+app.use(express.static('public'));
 
 app.use('*', (req, res) => {
   res.status(404).json({
