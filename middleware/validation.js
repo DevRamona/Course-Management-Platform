@@ -321,6 +321,9 @@ const validateRole = (allowedRoles) => {
   };
 };
 
+const validateStudentReflectionCreate = [body('dummy').optional(), handleValidationErrors];
+const validateStudentReflectionUpdate = [body('dummy').optional(), handleValidationErrors];
+
 module.exports = {
   handleValidationErrors,
   validateUserRegistration,
@@ -332,5 +335,7 @@ module.exports = {
   validateActivityLogUpdate,
   validateActivityLogQuery,
   validateModuleCreate,
-  validateRole
+  validateRole,
+  validateStudentReflectionCreate,
+  validateStudentReflectionUpdate
 }; 

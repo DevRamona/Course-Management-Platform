@@ -10,7 +10,6 @@ const courseOfferingRoutes = require('./routes/courseOfferings');
 const activityTrackerRoutes = require('./routes/activityTracker');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
 
 app.use(helmet());
 
@@ -51,7 +50,6 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/course-offerings', courseOfferingRoutes);
 app.use('/api/activity-tracker', activityTrackerRoutes);
-// app.use('/api/student-reflection', studentReflectionRoutes);
 
 app.use(express.static('public'));
 
@@ -109,26 +107,16 @@ app.use((error, req, res, next) => {
   });
 });
 
-const startServer = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('✅ Database connection established successfully.');
+if (require.main === module) {
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+    console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  });
+}
 
-    if (process.env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
-      console.log('✅ Database models synchronized.');
-    }
-
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
-      console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-    });
-  } catch (error) {
-    console.error('❌ Failed to start server:', error);
-    process.exit(1);
-  }
-};
+module.exports = app;
 
 process.on('SIGTERM', async () => {
   console.log('🛑 SIGTERM received, shutting down gracefully');
@@ -140,6 +128,4 @@ process.on('SIGINT', async () => {
   console.log('🛑 SIGINT received, shutting down gracefully');
   await sequelize.close();
   process.exit(0);
-});
-
-startServer(); 
+}); 
