@@ -14,15 +14,18 @@ const Cohort = sequelize.define('Cohort', {
   },
   startDate: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
+    field: 'start_date'
   },
   endDate: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
+    field: 'end_date'
   },
   isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true
+    defaultValue: true,
+    field: 'is_active'
   }
 }, {
   tableName: 'cohorts'
