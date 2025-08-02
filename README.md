@@ -150,7 +150,7 @@ CREATE TABLE activity_trackers (
 ### Swagger UI
 The API documentation is available via Swagger UI at:
 ```
-http://localhost:4000/api-docs
+http://localhost:3001/api-docs
 ```
 
 ### Authentication
