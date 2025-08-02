@@ -8,7 +8,7 @@ const Mode = sequelize.define('Mode', {
     autoIncrement: true
   },
   name: {
-    type: DataTypes.ENUM('online', 'in-person', 'hybrid'),
+    type: DataTypes.STRING(50),
     allowNull: false,
     unique: true
   },
@@ -18,7 +18,8 @@ const Mode = sequelize.define('Mode', {
   },
   isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true
+    defaultValue: true,
+    field: 'is_active'
   }
 }, {
   tableName: 'modes'

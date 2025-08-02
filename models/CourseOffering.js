@@ -10,6 +10,7 @@ const CourseOffering = sequelize.define('CourseOffering', {
   moduleId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: 'module_id',
     references: {
       model: 'modules',
       key: 'id'
@@ -18,6 +19,7 @@ const CourseOffering = sequelize.define('CourseOffering', {
   classId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: 'class_id',
     references: {
       model: 'classes',
       key: 'id'
@@ -26,6 +28,7 @@ const CourseOffering = sequelize.define('CourseOffering', {
   cohortId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: 'cohort_id',
     references: {
       model: 'cohorts',
       key: 'id'
@@ -34,6 +37,7 @@ const CourseOffering = sequelize.define('CourseOffering', {
   facilitatorId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: 'facilitator_id',
     references: {
       model: 'users',
       key: 'id'
@@ -42,34 +46,40 @@ const CourseOffering = sequelize.define('CourseOffering', {
   modeId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: 'mode_id',
     references: {
       model: 'modes',
       key: 'id'
     }
   },
   trimester: {
-    type: DataTypes.ENUM('HT1', 'HT2', 'FT'),
+    type: DataTypes.STRING(20),
     allowNull: false
   },
   intakePeriod: {
-    type: DataTypes.ENUM('HT1', 'HT2', 'FT'),
-    allowNull: false
+    type: DataTypes.STRING(20),
+    allowNull: false,
+    field: 'intake_period'
   },
   startDate: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
+    field: 'start_date'
   },
   endDate: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
+    field: 'end_date'
   },
   maxStudents: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    field: 'max_students'
   },
   isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true
+    defaultValue: true,
+    field: 'is_active'
   }
 }, {
   tableName: 'course_offerings',

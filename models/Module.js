@@ -27,7 +27,8 @@ const Module = sequelize.define('Module', {
   },
   isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true
+    defaultValue: true,
+    field: 'is_active'
   }
 }, {
   tableName: 'modules'

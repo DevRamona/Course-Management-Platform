@@ -1,40 +1,38 @@
 # Course Management Platform
 
-A comprehensive backend system for academic institutions to support faculty operations, monitor student progress, and enhance academic coordination.
+Backend system for academic institutions supporting faculty operations and student progress monitoring.
 
-## 🚀 Features
+## Features
 
-### Module 1: Course Allocation System ✅
-- **Role-based access control** (Manager, Facilitator, Student)
-- **Course allocation management** with CRUD operations
-- **Advanced filtering** by trimester, cohort, intake, facilitator, and mode
-- **Secure authentication** with JWT tokens
-- **Input validation** and error handling
+### Course Allocation System
+- Role-based access control (Manager, Facilitator)
+- Course allocation management with CRUD operations
+- Filtering by trimester, cohort, intake, facilitator, and mode
+- JWT authentication with input validation
 
-### Module 2: Facilitator Activity Tracker (FAT) ✅
-- **Weekly activity logging** for facilitators
-- **Comprehensive tracking** of attendance, grading, moderation, and sync status
-- **Redis-backed notification system** with automated reminders
-- **Background workers** for processing notifications and alerts
-- **Manager monitoring** with automated compliance alerts
-- **Email notifications** for facilitators and managers
+### Facilitator Activity Tracker
+- Weekly activity logging for facilitators
+- Tracking of attendance, grading, moderation, and sync status
+- Redis notification system with automated reminders
+- Background workers for processing notifications
+- Email notifications for facilitators and managers
 
-### Module 3: Student Reflection Page (Coming Soon)
-- **Internationalization (i18n)** support
-- **Student progress tracking**
-- **Reflection and feedback system**
+### Student Reflection Page
+- Internationalization (i18n) support
+- Student progress tracking
+- Reflection and feedback system
 
-## 🛠 Tech Stack
+## Tech Stack
 
-- **Backend**: Node.js, Express.js
-- **Database**: MySQL with Sequelize ORM
-- **Authentication**: JWT with bcrypt
-- **Queue System**: Redis with Bull
-- **Email**: Nodemailer
-- **Validation**: express-validator
-- **Security**: Helmet, CORS, Rate Limiting
-- **Testing**: Jest, Supertest
-- **Logging**: Winston
+- Backend: Node.js, Express.js
+- Database: MySQL with Sequelize ORM
+- Authentication: JWT with bcrypt
+- Queue System: Redis with Bull
+- Email: Nodemailer
+- Validation: express-validator
+- Security: Helmet, CORS, Rate Limiting
+- Testing: Jest, Supertest
+- Logging: Winston
 
 ## 📋 Prerequisites
 

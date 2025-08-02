@@ -18,7 +18,8 @@ const Class = sequelize.define('Class', {
   },
   isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true
+    defaultValue: true,
+    field: 'is_active'
   }
 }, {
   tableName: 'classes'

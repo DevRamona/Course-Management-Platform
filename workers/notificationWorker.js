@@ -1,8 +1,44 @@
 const { notificationQueue, reminderQueue, alertQueue } = require('../config/redis');
 const { sendActivityLogNotification, sendReminderNotification, sendManagerAlert } = require('../services/notificationService');
-const { ActivityTracker, User } = require('../models');
+const { ActivityTracker, User, sequelize } = require('../models');
 
 console.log('🚀 Starting notification worker...');
+
+// Initialize database connection
+const initializeDatabase = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('✅ Database connection established successfully');
+  } catch (error) {
+    console.error('❌ Database connection failed:', error.message);
+    console.log('🔄 Attempting to use SQLite configuration...');
+    
+    // Try to use SQLite configuration
+    const sqliteConfig = require('../config/database-sqlite');
+    const { Sequelize } = require('sequelize');
+    
+    const sqliteSequelize = new Sequelize(sqliteConfig.development);
+    
+    try {
+      await sqliteSequelize.authenticate();
+      console.log('✅ SQLite database connection established successfully');
+      // Update the sequelize instance in models
+      require('../models').sequelize = sqliteSequelize;
+    } catch (sqliteError) {
+      console.error('❌ SQLite connection also failed:', sqliteError.message);
+      throw new Error('No database connection available');
+    }
+  }
+};
+
+// Initialize database before starting workers
+initializeDatabase().then(() => {
+  console.log('🔄 Starting scheduled tasks...');
+  startScheduledTasks();
+}).catch((error) => {
+  console.error('❌ Failed to initialize database:', error.message);
+  process.exit(1);
+});
 
 notificationQueue.process('activity_log_submitted', async (job) => {
   try {
@@ -180,9 +216,6 @@ const startScheduledTasks = () => {
   setInterval(scheduleWeeklyReminders, 24 * 60 * 60 * 1000);
   setInterval(checkMissedDeadlines, 60 * 60 * 1000);
 };
-
-console.log('🔄 Starting scheduled tasks...');
-startScheduledTasks();
 
 process.on('SIGTERM', () => {
   console.log('🛑 Received SIGTERM. Shutting down gracefully...');

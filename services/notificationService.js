@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const { notificationQueue, reminderQueue, alertQueue } = require('../config/redis');
-const { ActivityTracker, User, CourseOffering } = require('../models');
+const { ActivityTracker, User, CourseOffering, Module } = require('../models');
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -113,6 +113,10 @@ const createAlert = async (managerId, alertType, data) => {
 
 const sendActivityLogNotification = async (activityLogId) => {
   try {
+    // Ensure database connection is available
+    const { sequelize } = require('../models');
+    await sequelize.authenticate();
+    
     const activityLog = await ActivityTracker.findByPk(activityLogId, {
       include: [
         {
@@ -167,6 +171,10 @@ const sendActivityLogNotification = async (activityLogId) => {
 
 const sendReminderNotification = async (facilitatorId, deadline) => {
   try {
+    // Ensure database connection is available
+    const { sequelize } = require('../models');
+    await sequelize.authenticate();
+    
     const facilitator = await User.findByPk(facilitatorId);
     if (!facilitator) {
       throw new Error('Facilitator not found');
@@ -221,6 +229,10 @@ const sendReminderNotification = async (facilitatorId, deadline) => {
 
 const sendManagerAlert = async (managerId, alertType, data) => {
   try {
+    // Ensure database connection is available
+    const { sequelize } = require('../models');
+    await sequelize.authenticate();
+    
     const manager = await User.findByPk(managerId);
     if (!manager) {
       throw new Error('Manager not found');
