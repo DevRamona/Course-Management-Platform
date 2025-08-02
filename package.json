@@ -45,6 +45,8 @@
     "redis": "^4.6.10",
     "sequelize": "^6.35.1",
     "sqlite3": "^5.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {

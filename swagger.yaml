@@ -1,0 +1,1073 @@
+openapi: 3.0.0
+info:
+  title: Course Management Platform API
+  description: Backend API for academic institutions supporting faculty operations and student progress monitoring
+  version: 1.0.0
+  contact:
+    name: Course Management Platform
+    email: support@university.edu
+
+servers:
+  - url: http://localhost:4000
+    description: Development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: User ID
+        email:
+          type: string
+          format: email
+          description: User email address
+        firstName:
+          type: string
+          description: User first name
+        lastName:
+          type: string
+          description: User last name
+        role:
+          type: string
+          enum: [manager, facilitator, student]
+          description: User role
+        isActive:
+          type: boolean
+          description: User account status
+        lastLogin:
+          type: string
+          format: date-time
+          description: Last login timestamp
+
+    CourseOffering:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Course offering ID
+        moduleId:
+          type: integer
+          description: Module ID
+        classId:
+          type: integer
+          description: Class ID
+        cohortId:
+          type: integer
+          description: Cohort ID
+        facilitatorId:
+          type: integer
+          description: Facilitator ID
+        modeId:
+          type: integer
+          description: Mode ID
+        trimester:
+          type: string
+          enum: [HT1, HT2, FT]
+          description: Trimester
+        intakePeriod:
+          type: string
+          enum: [HT1, HT2, FT]
+          description: Intake period
+        startDate:
+          type: string
+          format: date
+          description: Start date
+        endDate:
+          type: string
+          format: date
+          description: End date
+        maxStudents:
+          type: integer
+          description: Maximum number of students
+        isActive:
+          type: boolean
+          description: Course offering status
+
+    ActivityTracker:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Activity tracker ID
+        allocationId:
+          type: integer
+          description: Course allocation ID
+        facilitatorId:
+          type: integer
+          description: Facilitator ID
+        weekNumber:
+          type: integer
+          description: Week number
+        year:
+          type: integer
+          description: Year
+        attendance:
+          type: array
+          items:
+            type: boolean
+          description: Attendance array (5 days)
+        formativeOneGrading:
+          type: string
+          enum: [Done, Pending, Not Started]
+          description: Formative one grading status
+        formativeTwoGrading:
+          type: string
+          enum: [Done, Pending, Not Started]
+          description: Formative two grading status
+        summativeGrading:
+          type: string
+          enum: [Done, Pending, Not Started]
+          description: Summative grading status
+        courseModeration:
+          type: string
+          enum: [Done, Pending, Not Started]
+          description: Course moderation status
+        intranetSync:
+          type: string
+          enum: [Done, Pending, Not Started]
+          description: Intranet sync status
+        gradeBookStatus:
+          type: string
+          enum: [Done, Pending, Not Started]
+          description: Grade book status
+        notes:
+          type: string
+          description: Additional notes
+        submittedAt:
+          type: string
+          format: date-time
+          description: Submission timestamp
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          description: Error message
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: Field name
+              message:
+                type: string
+                description: Field error message
+
+    Success:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          description: Success message
+        data:
+          type: object
+          description: Response data
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Check if the API is running
+      tags: [Health]
+      responses:
+        '200':
+          description: API is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Course Management Platform API is running
+                  timestamp:
+                    type: string
+                    format: date-time
+                  environment:
+                    type: string
+                    example: development
+
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      description: Create a new user account
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, firstName, lastName]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email address
+                password:
+                  type: string
+                  minLength: 6
+                  description: User password
+                firstName:
+                  type: string
+                  description: User first name
+                lastName:
+                  type: string
+                  description: User last name
+                role:
+                  type: string
+                  enum: [manager, facilitator, student]
+                  default: student
+                  description: User role
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          user:
+                            $ref: '#/components/schemas/User'
+                          token:
+                            type: string
+                            description: JWT token
+        '400':
+          description: Validation error or user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/login:
+    post:
+      summary: User login
+      description: Authenticate user and return JWT token
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email address
+                password:
+                  type: string
+                  description: User password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          user:
+                            $ref: '#/components/schemas/User'
+                          token:
+                            type: string
+                            description: JWT token
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/profile:
+    get:
+      summary: Get user profile
+      description: Get current user profile information
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          user:
+                            $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/course-offerings:
+    get:
+      summary: Get all course offerings
+      description: Retrieve all course offerings with optional filtering and pagination
+      tags: [Course Offerings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: trimester
+          in: query
+          description: Filter by trimester
+          schema:
+            type: string
+            enum: [HT1, HT2, FT]
+        - name: intakePeriod
+          in: query
+          description: Filter by intake period
+          schema:
+            type: string
+            enum: [HT1, HT2, FT]
+        - name: facilitatorId
+          in: query
+          description: Filter by facilitator ID
+          schema:
+            type: integer
+        - name: modeId
+          in: query
+          description: Filter by mode ID
+          schema:
+            type: integer
+        - name: cohortId
+          in: query
+          description: Filter by cohort ID
+          schema:
+            type: integer
+        - name: moduleId
+          in: query
+          description: Filter by module ID
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Items per page
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+      responses:
+        '200':
+          description: Course offerings retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          courseOfferings:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/CourseOffering'
+                          pagination:
+                            type: object
+                            properties:
+                              page:
+                                type: integer
+                              limit:
+                                type: integer
+                              total:
+                                type: integer
+                              pages:
+                                type: integer
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create a new course offering
+      description: Create a new course offering (Manager only)
+      tags: [Course Offerings]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [moduleId, classId, cohortId, facilitatorId, modeId, trimester, intakePeriod, startDate, endDate]
+              properties:
+                moduleId:
+                  type: integer
+                  description: Module ID
+                classId:
+                  type: integer
+                  description: Class ID
+                cohortId:
+                  type: integer
+                  description: Cohort ID
+                facilitatorId:
+                  type: integer
+                  description: Facilitator ID
+                modeId:
+                  type: integer
+                  description: Mode ID
+                trimester:
+                  type: string
+                  enum: [HT1, HT2, FT]
+                  description: Trimester
+                intakePeriod:
+                  type: string
+                  enum: [HT1, HT2, FT]
+                  description: Intake period
+                startDate:
+                  type: string
+                  format: date
+                  description: Start date
+                endDate:
+                  type: string
+                  format: date
+                  description: End date
+                maxStudents:
+                  type: integer
+                  description: Maximum number of students
+      responses:
+        '201':
+          description: Course offering created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          courseOffering:
+                            $ref: '#/components/schemas/CourseOffering'
+        '400':
+          description: Validation error or duplicate offering
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Manager role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/course-offerings/{id}:
+    get:
+      summary: Get course offering by ID
+      description: Retrieve a specific course offering by ID
+      tags: [Course Offerings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Course offering ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Course offering retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          courseOffering:
+                            $ref: '#/components/schemas/CourseOffering'
+        '404':
+          description: Course offering not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update course offering
+      description: Update a course offering (Manager only)
+      tags: [Course Offerings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Course offering ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                moduleId:
+                  type: integer
+                  description: Module ID
+                classId:
+                  type: integer
+                  description: Class ID
+                cohortId:
+                  type: integer
+                  description: Cohort ID
+                facilitatorId:
+                  type: integer
+                  description: Facilitator ID
+                modeId:
+                  type: integer
+                  description: Mode ID
+                trimester:
+                  type: string
+                  enum: [HT1, HT2, FT]
+                  description: Trimester
+                intakePeriod:
+                  type: string
+                  enum: [HT1, HT2, FT]
+                  description: Intake period
+                startDate:
+                  type: string
+                  format: date
+                  description: Start date
+                endDate:
+                  type: string
+                  format: date
+                  description: End date
+                maxStudents:
+                  type: integer
+                  description: Maximum number of students
+                isActive:
+                  type: boolean
+                  description: Course offering status
+      responses:
+        '200':
+          description: Course offering updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          courseOffering:
+                            $ref: '#/components/schemas/CourseOffering'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Manager role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Course offering not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete course offering
+      description: Delete a course offering (Manager only)
+      tags: [Course Offerings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Course offering ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Course offering deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '403':
+          description: Forbidden - Manager role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Course offering not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/course-offerings/facilitator/my-courses:
+    get:
+      summary: Get facilitator's courses
+      description: Get course offerings assigned to the current facilitator
+      tags: [Course Offerings]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Facilitator's courses retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          courseOfferings:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/CourseOffering'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Facilitator role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/activity-tracker:
+    get:
+      summary: Get all activity logs
+      description: Get all activity logs (Manager only)
+      tags: [Activity Tracker]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: facilitatorId
+          in: query
+          description: Filter by facilitator ID
+          schema:
+            type: integer
+        - name: allocationId
+          in: query
+          description: Filter by allocation ID
+          schema:
+            type: integer
+        - name: weekNumber
+          in: query
+          description: Filter by week number
+          schema:
+            type: integer
+        - name: year
+          in: query
+          description: Filter by year
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Activity logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          activityLogs:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/ActivityTracker'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Manager role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create activity log
+      description: Create a new activity log (Facilitator only)
+      tags: [Activity Tracker]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [allocationId, weekNumber, year, attendance]
+              properties:
+                allocationId:
+                  type: integer
+                  description: Course allocation ID
+                weekNumber:
+                  type: integer
+                  description: Week number
+                year:
+                  type: integer
+                  description: Year
+                attendance:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Attendance array (5 days)
+                formativeOneGrading:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                  default: Not Started
+                formativeTwoGrading:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                  default: Not Started
+                summativeGrading:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                  default: Not Started
+                courseModeration:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                  default: Not Started
+                intranetSync:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                  default: Not Started
+                gradeBookStatus:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                  default: Not Started
+                notes:
+                  type: string
+                  description: Additional notes
+      responses:
+        '201':
+          description: Activity log created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          activityLog:
+                            $ref: '#/components/schemas/ActivityTracker'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Facilitator role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/activity-tracker/mylogs:
+    get:
+      summary: Get facilitator's own logs
+      description: Get activity logs for the current facilitator
+      tags: [Activity Tracker]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Activity logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          activityLogs:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/ActivityTracker'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Facilitator role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/activity-tracker/{id}:
+    get:
+      summary: Get activity log by ID
+      description: Get a specific activity log by ID
+      tags: [Activity Tracker]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Activity log ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Activity log retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          activityLog:
+                            $ref: '#/components/schemas/ActivityTracker'
+        '404':
+          description: Activity log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update activity log
+      description: Update an activity log (Facilitator only)
+      tags: [Activity Tracker]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Activity log ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attendance:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Attendance array (5 days)
+                formativeOneGrading:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                formativeTwoGrading:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                summativeGrading:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                courseModeration:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                intranetSync:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                gradeBookStatus:
+                  type: string
+                  enum: [Done, Pending, Not Started]
+                notes:
+                  type: string
+                  description: Additional notes
+      responses:
+        '200':
+          description: Activity log updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          activityLog:
+                            $ref: '#/components/schemas/ActivityTracker'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Facilitator role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Activity log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete activity log
+      description: Delete an activity log (Facilitator only)
+      tags: [Activity Tracker]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Activity log ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Activity log deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '403':
+          description: Forbidden - Facilitator role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Activity log not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Course Offerings
+    description: Course allocation management
+  - name: Activity Tracker
+    description: Facilitator activity logging 

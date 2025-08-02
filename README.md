@@ -2,6 +2,10 @@
 
 Backend system for academic institutions supporting faculty operations and student progress monitoring.
 
+## Video Link : https://www.youtube.com/watch?v=ghdHLQH_E9w
+
+## Student Pagination Page : https://management-platform1.netlify.app/
+
 ## Features
 
 ### Course Allocation System
@@ -34,13 +38,13 @@ Backend system for academic institutions supporting faculty operations and stude
 - Testing: Jest, Supertest
 - Logging: Winston
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Node.js (v16 or higher)
 - MySQL (v8.0 or higher)
 - Redis (v6.0 or higher) - for Module 2 notifications
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Clone and Install
 ```bash
@@ -83,26 +87,21 @@ SMTP_FROM=noreply@university.edu
 
 ### 3. Database Setup
 ```bash
-# Create database
-mysql -u root -p -e "CREATE DATABASE course_management;"
+mysql -u root -p -e "CREATE DATABASE course_management_db;"
 
-# Run migrations and seed data
 npm run db:reset
 ```
 
 ### 4. Start Services
 ```bash
-# Start Redis (required for Module 2)
 redis-server
 
-# Start the main application
 npm run dev
 
-# Start notification worker (in separate terminal)
 npm run worker
 ```
 
-## 📊 Database Schema
+##  Database Schema
 
 ### Core Models
 - **User**: Managers, Facilitators, Students
@@ -137,7 +136,7 @@ CREATE TABLE activity_trackers (
 );
 ```
 
-## 🔑 Test Accounts
+## Test Accounts
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -147,6 +146,12 @@ CREATE TABLE activity_trackers (
 | Student | student@university.edu | Password123! |
 
 ## 📡 API Documentation
+
+### Swagger UI
+The API documentation is available via Swagger UI at:
+```
+http://localhost:4000/api-docs
+```
 
 ### Authentication
 ```http
@@ -196,7 +201,7 @@ DELETE /api/activity-tracker/:id
 }
 ```
 
-## 🔔 Notification System (Module 2)
+##  Notification System (Module 2)
 
 ### Features
 - **Automated reminders** to facilitators for pending logs
@@ -210,7 +215,7 @@ DELETE /api/activity-tracker/:id
 2. **Weekly Reminders**: Automated reminders for pending submissions
 3. **Manager Alerts**: Alerts for missed deadlines and compliance issues
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -223,7 +228,7 @@ npm run test:watch
 npm test -- tests/activityTracker.test.js
 ```
 
-## 📝 Available Scripts
+##  Available Scripts
 
 ```bash
 npm start          # Start production server
@@ -236,7 +241,7 @@ npm run db:reset   # Reset database (drop, create, migrate, seed)
 npm run worker     # Start notification worker
 ```
 
-## 🔒 Security Features
+##  Security Features
 
 - **JWT Authentication** with secure token management
 - **Password hashing** using bcrypt
@@ -247,7 +252,7 @@ npm run worker     # Start notification worker
 - **SQL injection prevention** with Sequelize ORM
 - **Role-based access control** (RBAC)
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 course-management-platform/
