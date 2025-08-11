@@ -4,7 +4,6 @@ const { ActivityTracker, User, sequelize } = require('../models');
 
 console.log('🚀 Starting notification worker...');
 
-// Initialize database connection
 const initializeDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -13,7 +12,6 @@ const initializeDatabase = async () => {
     console.error('❌ Database connection failed:', error.message);
     console.log('🔄 Attempting to use SQLite configuration...');
     
-    // Try to use SQLite configuration
     const sqliteConfig = require('../config/database-sqlite');
     const { Sequelize } = require('sequelize');
     
@@ -22,7 +20,6 @@ const initializeDatabase = async () => {
     try {
       await sqliteSequelize.authenticate();
       console.log('✅ SQLite database connection established successfully');
-      // Update the sequelize instance in models
       require('../models').sequelize = sqliteSequelize;
     } catch (sqliteError) {
       console.error('❌ SQLite connection also failed:', sqliteError.message);
@@ -31,7 +28,6 @@ const initializeDatabase = async () => {
   }
 };
 
-// Initialize database before starting workers
 initializeDatabase().then(() => {
   console.log('🔄 Starting scheduled tasks...');
   startScheduledTasks();
