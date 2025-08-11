@@ -2,15 +2,15 @@ const { notificationQueue, reminderQueue, alertQueue } = require('../config/redi
 const { sendActivityLogNotification, sendReminderNotification, sendManagerAlert } = require('../services/notificationService');
 const { ActivityTracker, User, sequelize } = require('../models');
 
-console.log('🚀 Starting notification worker...');
+console.log(' Starting notification worker...');
 
 const initializeDatabase = async () => {
   try {
     await sequelize.authenticate();
-    console.log('✅ Database connection established successfully');
+    console.log('Database connection established successfully');
   } catch (error) {
-    console.error('❌ Database connection failed:', error.message);
-    console.log('🔄 Attempting to use SQLite configuration...');
+    console.error(' Database connection failed:', error.message);
+    console.log(' Attempting to use SQLite configuration...');
     
     const sqliteConfig = require('../config/database-sqlite');
     const { Sequelize } = require('sequelize');
@@ -19,36 +19,36 @@ const initializeDatabase = async () => {
     
     try {
       await sqliteSequelize.authenticate();
-      console.log('✅ SQLite database connection established successfully');
+      console.log('SQLite database connection established successfully');
       require('../models').sequelize = sqliteSequelize;
     } catch (sqliteError) {
-      console.error('❌ SQLite connection also failed:', sqliteError.message);
+      console.error(' SQLite connection also failed:', sqliteError.message);
       throw new Error('No database connection available');
     }
   }
 };
 
 initializeDatabase().then(() => {
-  console.log('🔄 Starting scheduled tasks...');
+  console.log(' Starting scheduled tasks...');
   startScheduledTasks();
 }).catch((error) => {
-  console.error('❌ Failed to initialize database:', error.message);
+  console.error('Failed to initialize database:', error.message);
   process.exit(1);
 });
 
 notificationQueue.process('activity_log_submitted', async (job) => {
   try {
-    console.log(`📧 Processing activity log notification for log ID: ${job.data.activityLogId}`);
+    console.log(`Processing activity log notification for log ID: ${job.data.activityLogId}`);
     const result = await sendActivityLogNotification(job.data.activityLogId);
     
     if (result.success) {
-      console.log(`✅ Activity log notification sent successfully`);
+      console.log(`Activity log notification sent successfully`);
       return { success: true, messageId: result.messageId };
     } else {
       throw new Error(result.error);
     }
   } catch (error) {
-    console.error(`❌ Activity log notification failed:`, error);
+    console.error(`Activity log notification failed:`, error);
     throw error;
   }
 });
@@ -56,18 +56,18 @@ notificationQueue.process('activity_log_submitted', async (job) => {
 reminderQueue.process('weekly_reminder', async (job) => {
   try {
     const { facilitatorId, deadline } = job.data;
-    console.log(`📧 Processing reminder for facilitator ID: ${facilitatorId}`);
+    console.log(`Processing reminder for facilitator ID: ${facilitatorId}`);
     
     const result = await sendReminderNotification(facilitatorId, new Date(deadline));
     
     if (result.success) {
-      console.log(`✅ Reminder sent successfully to facilitator ${facilitatorId}`);
+      console.log(`Reminder sent successfully to facilitator ${facilitatorId}`);
       return { success: true, messageId: result.messageId };
     } else {
       throw new Error(result.error);
     }
   } catch (error) {
-    console.error(`❌ Reminder processing failed:`, error);
+    console.error(`Reminder processing failed:`, error);
     throw error;
   }
 });
@@ -75,44 +75,44 @@ reminderQueue.process('weekly_reminder', async (job) => {
 alertQueue.process('manager_alert', async (job) => {
   try {
     const { managerId, alertType, data } = job.data;
-    console.log(`📧 Processing manager alert: ${alertType} for manager ID: ${managerId}`);
+    console.log(`Processing manager alert: ${alertType} for manager ID: ${managerId}`);
     
     const result = await sendManagerAlert(managerId, alertType, data);
     
     if (result.success) {
-      console.log(`✅ Manager alert sent successfully`);
+      console.log(` Manager alert sent successfully`);
       return { success: true, messageId: result.messageId };
     } else {
       throw new Error(result.error);
     }
   } catch (error) {
-    console.error(`❌ Manager alert processing failed:`, error);
+    console.error(`Manager alert processing failed:`, error);
     throw error;
   }
 });
 
 notificationQueue.on('completed', (job, result) => {
-  console.log(`✅ Job ${job.id} completed successfully:`, result);
+  console.log(` Job ${job.id} completed successfully:`, result);
 });
 
 notificationQueue.on('failed', (job, err) => {
-  console.error(`❌ Job ${job.id} failed:`, err.message);
+  console.error(` Job ${job.id} failed:`, err.message);
 });
 
 reminderQueue.on('completed', (job, result) => {
-  console.log(`✅ Reminder job ${job.id} completed successfully:`, result);
+  console.log(` Reminder job ${job.id} completed successfully:`, result);
 });
 
 reminderQueue.on('failed', (job, err) => {
-  console.error(`❌ Reminder job ${job.id} failed:`, err.message);
+  console.error(` Reminder job ${job.id} failed:`, err.message);
 });
 
 alertQueue.on('completed', (job, result) => {
-  console.log(`✅ Alert job ${job.id} completed successfully:`, result);
+  console.log(` Alert job ${job.id} completed successfully:`, result);
 });
 
 alertQueue.on('failed', (job, err) => {
-  console.error(`❌ Alert job ${job.id} failed:`, err.message);
+  console.error(` Alert job ${job.id} failed:`, err.message);
 });
 
 const scheduleWeeklyReminders = async () => {
@@ -148,7 +148,7 @@ const scheduleWeeklyReminders = async () => {
       }
     }
   } catch (error) {
-    console.error('❌ Error scheduling weekly reminders:', error);
+    console.error(' Error scheduling weekly reminders:', error);
   }
 };
 
@@ -199,9 +199,9 @@ const checkMissedDeadlines = async () => {
       }
     }
 
-    console.log(`🔍 Checked for missed deadlines. Found ${missedDeadlines.length} missed submissions.`);
+    console.log(` Checked for missed deadlines. Found ${missedDeadlines.length} missed submissions.`);
   } catch (error) {
-    console.error('❌ Error checking missed deadlines:', error);
+    console.error(' Error checking missed deadlines:', error);
   }
 };
 
@@ -214,13 +214,12 @@ const startScheduledTasks = () => {
 };
 
 process.on('SIGTERM', () => {
-  console.log('🛑 Received SIGTERM. Shutting down gracefully...');
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
-  console.log('🛑 Received SIGINT. Shutting down gracefully...');
+  console.log('Received SIGINT. Shutting down gracefully...');
   process.exit(0);
 });
 
-console.log('✅ Notification worker started successfully'); 
+console.log(' Notification worker started successfully'); 
