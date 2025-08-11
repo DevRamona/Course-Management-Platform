@@ -70,10 +70,9 @@ const createReminder = async (facilitatorId, deadline) => {
       }
     });
 
-    console.log(`✅ Reminder scheduled for facilitator ${facilitatorId}`);
+    console.log(` Reminder scheduled for facilitator ${facilitatorId}`);
     return { success: true };
   } catch (error) {
-    console.error('❌ Reminder scheduling failed:', error);
     return { success: false, error: error.message };
   }
 };
@@ -102,17 +101,16 @@ const createAlert = async (managerId, alertType, data) => {
       }
     });
 
-    console.log(`✅ Alert queued for manager ${managerId}: ${alertType}`);
+    console.log(`Alert queued for manager ${managerId}: ${alertType}`);
     return { success: true };
   } catch (error) {
-    console.error('❌ Alert queuing failed:', error);
+    console.error(' Alert queuing failed:', error);
     return { success: false, error: error.message };
   }
 };
 
 const sendActivityLogNotification = async (activityLogId) => {
   try {
-    // Ensure database connection is available
     const { sequelize } = require('../models');
     await sequelize.authenticate();
     
@@ -163,14 +161,13 @@ const sendActivityLogNotification = async (activityLogId) => {
 
     return result;
   } catch (error) {
-    console.error('❌ Activity log notification failed:', error);
+    console.error(' Activity log notification failed:', error);
     return { success: false, error: error.message };
   }
 };
 
 const sendReminderNotification = async (facilitatorId, deadline) => {
   try {
-    // Ensure database connection is available
     const { sequelize } = require('../models');
     await sequelize.authenticate();
     
@@ -221,14 +218,13 @@ const sendReminderNotification = async (facilitatorId, deadline) => {
 
     return result;
   } catch (error) {
-    console.error('❌ Reminder notification failed:', error);
+    console.error(' Reminder notification failed:', error);
     return { success: false, error: error.message };
   }
 };
 
 const sendManagerAlert = async (managerId, alertType, data) => {
   try {
-    // Ensure database connection is available
     const { sequelize } = require('../models');
     await sequelize.authenticate();
     
@@ -290,7 +286,7 @@ const sendManagerAlert = async (managerId, alertType, data) => {
     const result = await sendEmail(manager.email, subject, emailHtml);
     return result;
   } catch (error) {
-    console.error('❌ Manager alert failed:', error);
+    console.error(' Manager alert failed:', error);
     return { success: false, error: error.message };
   }
 };
