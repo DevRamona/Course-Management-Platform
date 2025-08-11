@@ -22,10 +22,10 @@ const sendEmail = async (to, subject, html) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Email sent:', info.messageId);
+    console.log(' Email sent:', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('❌ Email sending failed:', error);
+    console.error(' Email sending failed:', error);
     return { success: false, error: error.message };
   }
 };
@@ -39,10 +39,9 @@ const createNotification = async (type, data) => {
         delay: 2000
       }
     });
-    console.log(`✅ Notification queued: ${type}`);
+    console.log(`Notification queued: ${type}`);
     return { success: true };
   } catch (error) {
-    console.error('❌ Notification queuing failed:', error);
     return { success: false, error: error.message };
   }
 };
